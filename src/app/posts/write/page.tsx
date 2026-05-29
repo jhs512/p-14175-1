@@ -44,7 +44,7 @@ export default function Page() {
       .then((data) => {
         alert(data.msg);
 
-        router.push(`/posts/${data.data.id}`);
+        router.replace(`/posts/${data.data.id}`);
       });
   };
 
