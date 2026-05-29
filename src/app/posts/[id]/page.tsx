@@ -25,6 +25,14 @@ export default function Page() {
     });
   };
 
+  const deleteComment = (id: number, commentId: number) => {
+    apiFetch(`/api/v1/posts/${id}/comments/${commentId}`, {
+      method: "DELETE",
+    }).then((data) => {
+      alert(data.msg);
+    });
+  };
+
   useEffect(() => {
     apiFetch(`/api/v1/posts/${id}`)
       .then(setPost);
@@ -68,7 +76,18 @@ export default function Page() {
       {postComments != null && postComments.length > 0 && (
         <ul>
           {postComments.map((comment) => (
-            <li key={comment.id}>{comment.content}</li>
+            <li key={comment.id} className="py-2">
+              {comment.content}
+              <button
+                className="ml-2 p-2 rounded border"
+                onClick={() =>
+                  confirm(`${comment.id}번 댓글을 정말로 삭제하시겠습니까?`) &&
+                  deleteComment(id, comment.id)
+                }
+              >
+                삭제
+              </button>
+            </li>
           ))}
         </ul>
       )}
