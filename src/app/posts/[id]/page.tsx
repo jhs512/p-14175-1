@@ -77,7 +77,17 @@ function usePostComments(postId: number) {
     apiFetch(`/api/v1/posts/${postId}/comments/${commentId}`, {
       method: "PUT",
       body: JSON.stringify({ content }),
-    }).then(onSuccess);
+    }).then((data) => {
+      if (postComments == null) return;
+
+      setPostComments(
+        postComments.map((comment) =>
+          comment.id === commentId ? { ...comment, content } : comment
+        )
+      );
+
+      onSuccess(data);
+    });
   };
 
   return {
