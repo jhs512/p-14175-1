@@ -6,6 +6,22 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+function usePost(id: number) {
+  const [post, setPost] = useState<PostWithContentDto | null>(null);
+
+  useEffect(() => {
+    apiFetch(`/api/v1/posts/${id}`)
+      .then(setPost)
+      .catch((error) => {
+        alert(`${error.resultCode} : ${error.msg}`);
+      });
+  }, []);
+
+  return {
+    post,
+  };
+}
+
 function PostInfo({ post }: { post: PostWithContentDto }) {
   const router = useRouter();
 
@@ -156,16 +172,11 @@ export default function Page() {
   const { id: idStr } = useParams<{ id: string }>();
   const id = Number(idStr);
 
-  const [post, setPost] = useState<PostWithContentDto | null>(null);
+  const { post } = usePost(id);
+
   const [postComments, setPostComments] = useState<PostCommentDto[] | null>(null);
 
   useEffect(() => {
-    apiFetch(`/api/v1/posts/${id}`)
-      .then(setPost)
-      .catch((error) => {
-        alert(`${error.resultCode} : ${error.msg}`);
-      });
-
     apiFetch(`/api/v1/posts/${id}/comments`)
       .then(setPostComments)
       .catch((error) => {
