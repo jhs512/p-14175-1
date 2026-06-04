@@ -194,8 +194,26 @@ function PostCommentListItem({
     <li className="flex gap-2 items-center">
       <span>{comment.id} :</span>
       {!modifyMode && <span>{comment.content}</span>}
+      {modifyMode && (
+        <form
+          className="flex gap-2 items-center"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <textarea
+            className="border p-2 rounded"
+            name="content"
+            placeholder="댓글 내용"
+            maxLength={100}
+            rows={5}
+            defaultValue={comment.content}
+          />
+          <button className="p-2 rounded border" type="submit">
+            수정
+          </button>
+        </form>
+      )}
       <button className="p-2 rounded border" onClick={toggleModifyMode}>
-        수정
+        {modifyMode ? "수정취소" : "수정"}
       </button>
       <button
         className="p-2 rounded border"
