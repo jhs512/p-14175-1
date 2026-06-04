@@ -83,13 +83,13 @@ export default function Page() {
     apiFetch(`/api/v1/posts/${id}`)
       .then(setPost)
       .catch((error) => {
-        alert(error.message);
+        alert(`${error.resultCode} : ${error.msg}`);
       });
 
     apiFetch(`/api/v1/posts/${id}/comments`)
       .then(setPostComments)
       .catch((error) => {
-        alert(error.message);
+        alert(`${error.resultCode} : ${error.msg}`);
       });
   }, []);
 
