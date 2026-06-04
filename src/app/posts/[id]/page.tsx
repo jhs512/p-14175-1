@@ -17,23 +17,26 @@ function usePost(id: number) {
       });
   }, []);
 
+  const deletePost = (id: number, onSuccess: () => void) => {
+    apiFetch(`/api/v1/posts/${id}`, {
+      method: "DELETE",
+    }).then(onSuccess);
+  };
+
   return {
     post,
+    deletePost,
   };
 }
 
-function PostInfo({ post }: { post: PostWithContentDto }) {
+function PostInfo({
+  post,
+  deletePost,
+}: {
+  post: PostWithContentDto;
+  deletePost: (id: number, onSuccess: () => void) => void;
+}) {
   const router = useRouter();
-
-  const deletePost = (id: number) => {
-    apiFetch(`/api/v1/posts/${id}`, {
-      method: "DELETE",
-    }).then((data) => {
-      alert(data.msg);
-
-      router.replace("/posts");
-    });
-  };
 
   return (
     <>
@@ -44,7 +47,12 @@ function PostInfo({ post }: { post: PostWithContentDto }) {
       <div className="flex gap-2">
         <button
           className="p-2 rounded border cursor-pointer"
-          onClick={() => confirm(`${post.id}번 글을 정말로 삭제하시겠습니까?`) && deletePost(post.id)}
+          onClick={() =>
+            confirm(`${post.id}번 글을 정말로 삭제하시겠습니까?`) &&
+            deletePost(post.id, () => {
+              router.replace("/posts");
+            })
+          }
         >
           삭제
         </button>
@@ -172,7 +180,7 @@ export default function Page() {
   const { id: idStr } = useParams<{ id: string }>();
   const id = Number(idStr);
 
-  const { post } = usePost(id);
+  const { post, deletePost } = usePost(id);
 
   const [postComments, setPostComments] = useState<PostCommentDto[] | null>(null);
 
@@ -190,7 +198,7 @@ export default function Page() {
     <>
       <h1>글 상세페이지</h1>
 
-      <PostInfo post={post} />
+      <PostInfo post={post} deletePost={deletePost} />
 
       <hr className="my-2" />
 
