@@ -81,10 +81,16 @@ export default function Page() {
 
   useEffect(() => {
     apiFetch(`/api/v1/posts/${id}`)
-      .then(setPost);
+      .then(setPost)
+      .catch((error) => {
+        alert(error.message);
+      });
 
     apiFetch(`/api/v1/posts/${id}/comments`)
-      .then(setPostComments);
+      .then(setPostComments)
+      .catch((error) => {
+        alert(error.message);
+      });
   }, []);
 
   if (post == null) return <div>로딩중...</div>;
