@@ -42,11 +42,7 @@ function usePostComments(id: number) {
       });
   }, []);
 
-  const deleteComment = (
-    id: number,
-    commentId: number,
-    onSuccess: (data: any) => void
-  ) => {
+  const deleteComment = (commentId: number, onSuccess: (data: any) => void) => {
     apiFetch(`/api/v1/posts/${id}/comments/${commentId}`, {
       method: "DELETE",
     }).then((data) => {
@@ -58,11 +54,7 @@ function usePostComments(id: number) {
     });
   };
 
-  const writeComment = (
-    id: number,
-    content: string,
-    onSuccess: (data: any) => void
-  ) => {
+  const writeComment = (content: string, onSuccess: (data: any) => void) => {
     apiFetch(`/api/v1/posts/${id}/comments`, {
       method: "POST",
       body: JSON.stringify({
@@ -117,10 +109,8 @@ function PostInfo({ postState }: { postState: ReturnType<typeof usePost> }) {
 }
 
 function PostCommentWrite({
-  id,
   postCommentsState,
 }: {
-  id: number;
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
   const { writeComment } = postCommentsState;
@@ -151,7 +141,7 @@ function PostCommentWrite({
       return;
     }
 
-    writeComment(id, contentTextarea.value, (data) => {
+    writeComment(contentTextarea.value, (data) => {
       alert(data.msg);
       contentTextarea.value = "";
     });
@@ -178,10 +168,8 @@ function PostCommentWrite({
 }
 
 function PostCommentList({
-  id,
   postCommentsState,
 }: {
-  id: number;
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
   const { postComments, deleteComment: _deleteComment } = postCommentsState;
@@ -189,7 +177,7 @@ function PostCommentList({
   const deleteComment = (commentId: number) => {
     if (!confirm(`${commentId}번 댓글을 정말로 삭제하시겠습니까?`)) return;
 
-    _deleteComment(id, commentId, (data) => {
+    _deleteComment(commentId, (data) => {
       alert(data.msg);
     });
   };
@@ -224,19 +212,17 @@ function PostCommentList({
 }
 
 function PostCommentWriteAndList({
-  id,
   postCommentsState,
 }: {
-  id: number;
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
   return (
     <>
-      <PostCommentWrite id={id} postCommentsState={postCommentsState} />
+      <PostCommentWrite postCommentsState={postCommentsState} />
 
       <hr className="my-2" />
 
-      <PostCommentList id={id} postCommentsState={postCommentsState} />
+      <PostCommentList postCommentsState={postCommentsState} />
     </>
   );
 }
@@ -256,7 +242,7 @@ export default function Page() {
 
       <hr className="my-2" />
 
-      <PostCommentWriteAndList id={id} postCommentsState={postCommentsState} />
+      <PostCommentWriteAndList postCommentsState={postCommentsState} />
     </>
   );
 }
